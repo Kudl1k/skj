@@ -3,7 +3,12 @@ def is_palindrome(data):
 
 
 def lex_compare(a, b):
-    return (a > b)*b + (a < b)*a
+    for i in range(min(len(a), len(b))):
+        if a[i] < b[i]:
+            return a
+        elif b[i] < a[i]:
+            return b
+    return a
 
 def count_successive(string):
     if string == "":
