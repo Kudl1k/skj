@@ -25,10 +25,28 @@ def cached(f):
         fn(3, 6) == 9 # computed, (1, 2) was now forgotten
         fn(1, 2) == 3 # computed again, (3, 4) was now forgotten
     """
-    pass
+    cache_order = []
+    cache = {}
+
+    def fn(*args):
+        if args in cache:
+            return cache[args]     
+        else:
+            if len(cache_order) >= 3:
+                last_item = cache_order.pop(0)
+                del cache[last_item]
+            value = f(*args)
+            cache[*args] = value
+            cache_order.append(args)
+            return value
+    return fn
+
+
 
 
 T = TypeVar("T")
+
+
 
 
 @dataclasses.dataclass
@@ -80,6 +98,17 @@ def parser_char(char: str) -> Parser[str]:
         parser_char("y")("xa") => ParseResult(value=None, rest="xa")
         ```
     """
+    def parser(input: str) -> ParseResult[str]:
+        if not char:
+            raise ValueError("Empty character string")
+
+        if len(char) > 1:
+            raise ValueError("Character string should be of length 1")
+        if input.startswith(char):
+            return ParseResult(value=char,rest=input[len(char):])
+        else:
+            return ParseResult.invalid(rest=input)
+    return parser
 
 
 def parser_repeat(parser: Parser[T]) -> Parser[List[T]]:
