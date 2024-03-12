@@ -98,12 +98,13 @@ def parser_char(char: str) -> Parser[str]:
         parser_char("y")("xa") => ParseResult(value=None, rest="xa")
         ```
     """
-    def parser(input: str) -> ParseResult[str]:
-        if not char:
-            raise ValueError("Empty character string")
+    if not char:
+        raise ValueError()
 
-        if len(char) > 1:
-            raise ValueError("Character string should be of length 1")
+    if len(char) > 1:
+        raise ValueError()
+    
+    def parser(input: str) -> ParseResult[str]:
         if input.startswith(char):
             return ParseResult(value=char,rest=input[len(char):])
         else:
