@@ -80,11 +80,10 @@ class ExampleWorld(object):
             speedy = random.randint(-20,20)
             color = colors[random.randint(0,len(colors)-1)]
             bounce = random.randint(0,1)
-            #if i % 2 == 0:
-                #self.list_of_atoms.append(Atom(x,y,speedx,speedy,radius,color,bounce))
-            
-                
-            self.list_of_atoms.append(FallDownAtom(x,y,speedx,speedy,radius,color,bounce,10,1))
+            if i % 2 == 0:
+                self.list_of_atoms.append(Atom(x,y,speedx,speedy,radius,color,bounce))
+            else:   
+                self.list_of_atoms.append(FallDownAtom(x,y,speedx,speedy,radius,color,bounce,10,1))
         pass
 
     def tick(self):
