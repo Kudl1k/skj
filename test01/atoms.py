@@ -42,6 +42,22 @@ class Atom:
                 self.speedy = -self.speedy
         else:
             self.y += self.speedy
+class FallDownAtom(Atom):
+    def __init__(self,x, y,speedx,speedy, rad, color,bounce,g,damping):
+        super().__init__(x,y,speedx,speedy,rad,color,bounce)
+        self.g = g
+        self.damping = damping
+    
+    def move(self, width, height):
+        if (self.x + self.speedx > width or self.x + self.speedx < 0):
+            self.speedx = -self.speedx
+        if (self.y + self.speedy > height or self.y + self.speedy < 0):
+            self.speedy = -self.speedy * self.damping
+            self.speedx *= self.damping
+        else:
+            self.speedy += self.g
+            self.y += self.speedy
+
 
 
 class ExampleWorld(object):
@@ -64,7 +80,11 @@ class ExampleWorld(object):
             speedy = random.randint(-20,20)
             color = colors[random.randint(0,len(colors)-1)]
             bounce = random.randint(0,1)
-            self.list_of_atoms.append(Atom(x,y,speedx,speedy,radius,color,bounce))
+            #if i % 2 == 0:
+                #self.list_of_atoms.append(Atom(x,y,speedx,speedy,radius,color,bounce))
+            
+                
+            self.list_of_atoms.append(FallDownAtom(x,y,speedx,speedy,radius,color,bounce,10,1))
         pass
 
     def tick(self):
