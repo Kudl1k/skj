@@ -218,6 +218,20 @@ def parser_map(parser: Parser[R], map_fn: Callable[[R], Optional[T]]) -> Parser[
         parser("ax") => ParseResult(value=None, rest="ax")
         ```
     """
+    def inner_parser(input: str) -> ParseResult[str]:
+        result = parser(input)
+        if result.is_valid():
+            if map_fn(result.value) is None:
+                return ParseResult(value=None,rest=input)
+            else:
+                return ParseResult(value=map_fn(result.value),rest=result.rest)
+        else:
+            return ParseResult(None,input)
+        
+    return inner_parser
+
+
+
 
 
 def parser_matches(filter_fn: Callable[[str], bool]) -> Parser[str]:
@@ -234,7 +248,15 @@ def parser_matches(filter_fn: Callable[[str], bool]) -> Parser[str]:
         parser("") => ParseResult(value=None, rest="")
         ```
     """
-
+    def inner_parser(input: str) -> ParseResult[str]:
+        if not input:
+            return ParseResult(None,input)
+        result = filter_fn(input[0])
+        if not result:
+            return ParseResult(None,input)
+        else:
+            return ParseResult(value= input[0], rest=input[1:])
+    return inner_parser
 
 # Use the functions above to implement the functions below.
 
@@ -250,6 +272,20 @@ def parser_string(string: str) -> Parser[str]:
         parser("fo") => ParseResult(value=None, rest="fo")
         ```
     """
+    def inner_parser(input: str) -> ParseResult[str]:
+        value = ""
+        temp = input
+        for i in string:
+            parser = parser_char(i)
+            result = parser(temp)
+            if result.is_valid():
+                value += result.value
+                temp = result.rest
+            else:
+                return ParseResult(None, input)
+        return ParseResult(value=value,rest=temp)
+        
+    return inner_parser
 
 
 def parser_int() -> Parser[int]:
@@ -264,3 +300,18 @@ def parser_int() -> Parser[int]:
         parser("foo") => ParseResult(value=None, rest="foo")
         ```
     """
+    def inner_parser(input: str) -> ParseResult[int]:
+        num_str = ""
+        for i in input:
+            if i.isdigit():
+                num_str += i
+            else:
+                break
+        if num_str == "":
+            return ParseResult(value=None,rest=input)
+        else:
+            return ParseResult(value=int(num_str),rest=input[len(num_str):])
+    return inner_parser
+        
+
+        
