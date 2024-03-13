@@ -302,9 +302,13 @@ def parser_int() -> Parser[int]:
     """
     def inner_parser(input: str) -> ParseResult[int]:
         num_str = ""
+        parser = parser_matches(lambda x: x in ("0123456789"))
+        temp = input
         for i in input:
-            if i.isdigit():
-                num_str += i
+            result = parser(temp)
+            if result.is_valid():
+                num_str += result.value
+                temp = result.rest
             else:
                 break
         if num_str == "":
