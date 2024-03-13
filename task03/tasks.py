@@ -104,12 +104,12 @@ def parser_char(char: str) -> Parser[str]:
     if len(char) > 1:
         raise ValueError()
     
-    def parser(input: str) -> ParseResult[str]:
+    def inner_parser(input: str) -> ParseResult[str]:
         if input.startswith(char):
             return ParseResult(value=char,rest=input[len(char):])
         else:
             return ParseResult.invalid(rest=input)
-    return parser
+    return inner_parser
 
 
 def parser_repeat(parser: Parser[T]) -> Parser[List[T]]:
