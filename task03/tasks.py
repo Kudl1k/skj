@@ -125,6 +125,19 @@ def parser_repeat(parser: Parser[T]) -> Parser[List[T]]:
         parser("xa") => ParseResult(value=[], rest="xa")
         ```
     """
+    def inner_parser(input: str) -> ParseResult[str]:
+        values = []
+        temp = input
+        while True:
+            result = parser(temp)
+            if result.is_valid():
+                values.append(result.value)
+                temp = result.rest
+            else:
+                break
+        return ParseResult(value= values, rest = temp)
+    return inner_parser
+
 
 
 def parser_seq(parsers: List[Parser]) -> Parser:
@@ -141,6 +154,22 @@ def parser_seq(parsers: List[Parser]) -> Parser:
         parser("ab") => ParseResult(value=None, rest="ab")
         ```
     """
+    def inner_parser(input: str) -> ParseResult[str]:
+        if not parsers:
+            return ParseResult(value=[],rest=input)
+        values = []
+        temp = input
+        for parser in parsers:
+            result = parser(temp)
+            if result.is_valid():
+                values.append(result.value)
+                temp = result.rest
+            else:
+                return ParseResult(value=None, rest=input)
+
+        return ParseResult(value=values,rest=temp)
+
+    return inner_parser
 
 
 def parser_choice(parsers: List[Parser]) -> Parser:
@@ -158,6 +187,15 @@ def parser_choice(parsers: List[Parser]) -> Parser:
         parser("cx") => ParseResult(value=None, rest="cx")
         ```
     """
+    def inner_parser(input: str) -> ParseResult[str]:
+        temp = input
+        for parser in parsers:
+            result = parser(temp)
+            if result.is_valid():
+                return ParseResult(value= result.value,rest= result.rest)
+        return ParseResult(value=None,rest= input) 
+    return inner_parser   
+        
 
 
 R = TypeVar("R")
