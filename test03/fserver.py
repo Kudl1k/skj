@@ -10,13 +10,15 @@ class Forecast(object):
         """
         Konstuktor predpovedi. Instancni promenne reprezentuji predana data.
         """
-        pass
+        self.description = description
+        self.wind_force = wind_force
+        self.temperature = temperature
 
     def get_list(self):
         """
         Vraci trojici reprezentujici predpoved.
         """
-        pass
+        return (self.description,self.wind_force,self.temperature)
 
 class ForecastCalendar(object):
     """
@@ -30,14 +32,20 @@ class ForecastCalendar(object):
         """
         Konstruktor kalendare predpovedi. Instancni promenne reprezentuji predana data.
         """
-        pass
+        self.initial_values = initial_values
+        self.password = password
 
     def get_forecast(self, date):
         """
         Vrati predpoved pro zadane datum jako retezec. V pripade, ze pro dane
         datum neexistuje predpoved. Vrati se retezec "No focecast".
         """
-        return "No forecast"
+        if date in self.initial_values:
+            forecast = self.initial_values[date]
+            return forecast.get_list()
+        else:
+            return "No forecast"
+
 
     def update_forecast(self, password, date, description, wind_force, temperature):
         """
@@ -46,17 +54,25 @@ class ForecastCalendar(object):
         aktualizovat predpoved. v takovm priapde metoda vrati retezec "No
         update". Metoda muze aktualizovat stavajici predpoved nebo pridat novou.
         """
-        return "No update"
-        
+        if password != self.password:
+            return "No update"
+        self.initial_values[date] = Forecast(description=description,wind_force=wind_force,temperature=temperature)
+        return "Forecast updated"
+    
 def main():
 
     # TODO Pridat do initial_state data predpovedi tak, aby je mohl klient
     # precist.
-    initial_state = {}
+    initial_state = {
+        '2012-11-05': Forecast('Sunny', 5, 20),
+        '2012-11-06': Forecast('Cloudy', 10, 15),
+        '2012-11-07': Forecast('Rainy', 20, 10),
+        '2012-11-09': Forecast('Windy', 10, 2),
+    }
 
     fcalendar = ForecastCalendar(initial_state, password = "master-of-weather")
 
-    server_address = ('localhost', 10001)
+    server_address = ('localhost', 10020)
     server = SimpleXMLRPCServer(server_address)
     server.register_instance(fcalendar)
     server.register_introspection_functions()
