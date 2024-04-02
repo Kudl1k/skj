@@ -20,5 +20,7 @@ print_forecast(fserver, "2012-11-09")
 
 print("Updating ... ", end="")
 print(fserver.update_forecast("master-of-weather", "2012-11-09", "rains dogs and cats", 10.3, 3.0))
+print(fserver.update_forecast("master", "2012-11-09", "rains dogs and cats", 10.3, 3.0))
+
 
 print_forecast(fserver, "2012-11-09")
