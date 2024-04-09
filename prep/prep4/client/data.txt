@@ -1,0 +1,1 @@
+['NNNNNNNNNNN', 'NNNNNNNNNNN', 'NNNNNNNNNNN', 'ooooooooooo', 'ttt        ', 'tt         ', '           ', '           ', '     t    t', '   tttt    ', ' ttttttt   ', '           ', '           ', '           ', '           ', '           ', '     p     ', '           ', '           ', '           ', '           ', '           ']
