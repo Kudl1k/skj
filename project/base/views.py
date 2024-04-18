@@ -15,3 +15,9 @@ def home(request):
         'title': 'Home Page',
     }
     return render(request, 'base/home.html', context)
+
+def login(request):
+    return render(request, 'base/login.html')
+
+def signup(request):
+    return render(request, 'base/singup.html')

@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
     <title>LiteSport - {{title}}</title>
 </head>
-<body>
-    {% load static %}
+{% load static %}
+<body style="background-image: url('/static/background-light.jpg'); background-repeat: no-repeat; background-size: cover; min-height: 100vh;">
     {% include 'navbar.html' %}
     {% block content %}
 
