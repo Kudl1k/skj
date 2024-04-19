@@ -8,7 +8,6 @@ rooms = [
     {'id': 3, 'name' : 'Room 3'}
 ]
 
-
 def home(request):
     context = {
         'rooms': rooms,
