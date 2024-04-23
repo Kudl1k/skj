@@ -1,7 +1,7 @@
 {% extends 'main.html' %}
 
 {% block title %}
-Football Page
+Results page
 {% endblock %}
 
 {% block content %}
@@ -29,10 +29,22 @@ Football Page
                 <ul class="list-group">
                     {% for match in matches %}
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <a href="{% url 'football_match' match.id_league.id match.id %}">
-                            {{ match.id_team_1.name }} vs {{ match.id_team_2.name }}
-                        </a>
-                        <span class="badge bg-primary rounded-pill">{{ match.start_time }}</span>
+                        {% if match.id_category.name == "Football" %}
+                            <a href="{% url 'football_match' match.id_league.id match.id %}">
+                                {{ match.id_team_1.name }} vs {{ match.id_team_2.name }}
+                            </a>
+                            <span class="badge bg-primary rounded-pill">{{ match.start_time }}</span>
+                        {% elif match.id_category.name == "Basketball" %}
+                            <a href="{% url 'basketball_match' match.id_league.id match.id %}">
+                                {{ match.id_team_1.name }} vs {{ match.id_team_2.name }}
+                            </a>
+                            <span class="badge bg-primary rounded-pill">{{ match.start_time }}</span>
+                        {% elif match.id_category.name == "Ice Hockey" %}
+                            <a href="{% url 'hockey_match' match.id_league.id match.id %}">
+                                {{ match.id_team_1.name }} vs {{ match.id_team_2.name }}
+                            </a>
+                            <span class="badge bg-primary rounded-pill">{{ match.start_time }}</span>
+                        {% endif %}
                     </li>
                     {% empty %}
                     <li class="list-group-item">Please select a league to view matches.</li>
