@@ -13,24 +13,45 @@ Football Page
             <div class="col">
                 <ul class="list-group">
                     {% for league in leagues %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            {{ league.name }}
-                        </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {% if league.id_category.name == "Football" %}
+                            <a href="{% url 'football_league' league.id %}">{{ league.name }}</a>
+                        {% elif league.id_category.name == "Basketball" %}
+                            <a href="{% url 'basketball_league' league.id %}">{{ league.name }}</a>
+                        {% elif league.id_category.name == "Ice Hockey" %}
+                            <a href="{% url 'hockey_league' league.id %}">{{ league.name }}</a>
+                        {% endif %}
+                    </li>
                     {% endfor %}
                 </ul>
             </div>
             <div class="col">
                 <ul class="list-group">
                     {% for match in matches %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="{% url 'football_match' match.id_league match.id %}">
                             {{ match.id_team_1.name }} vs {{ match.id_team_2.name }}
-                            <span class="badge bg-primary rounded-pill">{{ match.start_time }}</span>
-                        </li>
+                        </a>
+                        <span class="badge bg-primary rounded-pill">{{ match.start_time }}</span>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item">Please select a league to view matches.</li>
                     {% endfor %}
                 </ul>
             </div>
             <div class="col">
-                One of three columns
+                {% if selected_match %}
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <h5>{{ selected_match.id_team_1.name }} vs {{ selected_match.id_team_2.name }}</h5>
+                            <p>Score: {{ selected_match.score_1 }} - {{ selected_match.score_2 }}</p>
+                            <p>Start Time: {{ selected_match.start_time }}</p>
+                            <p>End Time: {{ selected_match.end_time }}</p>
+                            <p>Viewers: {{ selected_match.viewers }}</p>
+                            <p>Stadium: {{ selected_match.stadium }}</p>
+                        </li>
+                    </ul>
+                {% endif %}
             </div>
         </div>
     </div>
