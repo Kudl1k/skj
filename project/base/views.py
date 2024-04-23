@@ -4,12 +4,6 @@ from .models import League, Category, Match
 
 # Create your views here.
 
-rooms = [
-    {'id': 1, 'name' : 'Room 1'},
-    {'id': 2, 'name' : 'Room 2'},
-    {'id': 3, 'name' : 'Room 3'}
-]
-
 def home(request, league_id=None, match_id=None):
     match = None
     category = Category.objects.get(name='Football')
@@ -69,3 +63,6 @@ def login(request):
 
 def signup(request):
     return render(request, 'base/singup.html')
+
+def players(request):
+    return render(request, 'base/players.html')
