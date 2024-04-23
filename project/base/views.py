@@ -10,28 +10,24 @@ rooms = [
     {'id': 3, 'name' : 'Room 3'}
 ]
 
-def home(request, league_id=None,match_id= None):
+def home(request, league_id=None, match_id=None):
+    match = None
     category = Category.objects.get(name='Football')
     leagues = League.objects.filter(id_category=category)
     if league_id:
-        print(league_id)
+        league = League.objects.get(id=league_id)
         if match_id:
-            league = League.objects.get(name=league_id)
+            match = Match.objects.get(id=match_id)
         else:
-            league = League.objects.get(id=league_id)
+            match = None
         matches = Match.objects.filter(id_league=league)
     else:
         matches = None
 
-    if match_id:
-        selected_match = get_object_or_404(Match, id=match_id)
-    else:
-        selected_match = None
-
     context = {
         'leagues': leagues,
         'matches': matches,
-        'selected_match': selected_match,
+        'selected_match': match,
         'title': 'Football Page',
     }
     return render(request, 'base/home.html', context)

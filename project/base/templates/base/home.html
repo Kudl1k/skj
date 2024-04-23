@@ -29,7 +29,7 @@ Football Page
                 <ul class="list-group">
                     {% for match in matches %}
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <a href="{% url 'football_match' match.id_league match.id %}">
+                        <a href="{% url 'football_match' match.id_league.id match.id %}">
                             {{ match.id_team_1.name }} vs {{ match.id_team_2.name }}
                         </a>
                         <span class="badge bg-primary rounded-pill">{{ match.start_time }}</span>
