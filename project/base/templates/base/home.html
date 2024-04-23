@@ -1,7 +1,7 @@
 {% extends 'main.html' %}
 
 {% block title %}
-Home Page
+Football Page
 {% endblock %}
 
 {% block content %}
@@ -11,78 +11,23 @@ Home Page
     <div class="container text-start">
         <div class="row align-items-start">
             <div class="col">
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
-                <h1>Hello</h1>
+                <ul class="list-group">
+                    {% for league in leagues %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ league.name }}
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
             <div class="col">
-                One of three columns
+                <ul class="list-group">
+                    {% for match in matches %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ match.id_team_1.name }} vs {{ match.id_team_2.name }}
+                            <span class="badge bg-primary rounded-pill">{{ match.start_time }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
             <div class="col">
                 One of three columns

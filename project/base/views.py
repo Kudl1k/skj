@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from .models import League, Category, Match
 
 # Create your views here.
 
@@ -9,9 +10,33 @@ rooms = [
 ]
 
 def home(request):
+    category = Category.objects.get(name='Football')
+    leagues = League.objects.filter(id_category=category)
+    matches = Match.objects.filter(id_category=category)
     context = {
-        'rooms': rooms,
-        'title': 'Home Page',
+        'leagues': leagues,
+        'matches': matches,
+        'title': 'Football Page',
+    }
+    return render(request, 'base/home.html', context)
+
+def hockey(request):
+    category = Category.objects.get(name='Ice Hockey')
+    leagues = League.objects.filter(id_category=category)
+    print(leagues)
+    context = {
+        'leagues': leagues,
+        'title': 'Ice hockey Page',
+    }
+    return render(request, 'base/home.html', context)
+
+def basketball(request):
+    category = Category.objects.get(name='Basketball')
+    leagues = League.objects.filter(id_category=category)
+    print(leagues)
+    context = {
+        'leagues': leagues,
+        'title': 'Basketball Page',
     }
     return render(request, 'base/home.html', context)
 
