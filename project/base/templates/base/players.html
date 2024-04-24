@@ -14,9 +14,9 @@ Players Page
                         {% if league.id_category.name == "Football" %}
                             <a href="{% url 'football_league_players' league.id %}">{{ league.name }}</a>
                         {% elif league.id_category.name == "Basketball" %}
-                            <a href="{% url 'basketball_league' league.id %}">{{ league.name }}</a>
+                            <a href="{% url 'basketball_league_players' league.id %}">{{ league.name }}</a>
                         {% elif league.id_category.name == "Ice Hockey" %}
-                            <a href="{% url 'hockey_league' league.id %}">{{ league.name }}</a>
+                            <a href="{% url 'hockey_league_players' league.id %}">{{ league.name }}</a>
                         {% endif %}
                     </li>
                     {% endfor %}
@@ -26,9 +26,19 @@ Players Page
                 <ul class="list-group">
                     {% for team in teams %}
                     <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {% if team.id_category.name == "Football" %}
                         <a href="{% url 'football_team_players' team.id_league.id team.id %}">
                             {{ team.name }}
                         </a>
+                        {% elif team.id_category.name == "Basketball" %}
+                        <a href="{% url 'basketball_team_players' team.id_league.id team.id %}">
+                            {{ team.name }}
+                        </a>
+                        {% elif team.id_category.name == "Ice Hockey" %}
+                        <a href="{% url 'hockey_team_players' team.id_league.id team.id %}">
+                            {{ team.name }}
+                        </a>
+                        {% endif %}
                     </li>
                     {% empty %}
                     <li class="list-group-item">Please select a league to view teams.</li>
@@ -39,9 +49,19 @@ Players Page
                 <ul class="list-group">
                     {% for player in players %}
                     <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {% if player.history.id_team.id_category.name == "Football" %}
                         <a href="{% url 'football_player_players' player.history.id_team.id_league.id player.history.id_team.id player.player.id %}">
                             {{ player.player.name }} {{ player.player.surname }}
                         </a>
+                        {% elif player.history.id_team.id_category.name == "Basketball" %}
+                        <a href="{% url 'basketball_player_players' player.history.id_team.id_league.id player.history.id_team.id player.player.id %}">
+                            {{ player.player.name }} {{ player.player.surname }}
+                        </a>
+                        {% elif player.history.id_team.id_category.name == "Ice Hockey" %}
+                        <a href="{% url 'hockey_player_players' player.history.id_team.id_league.id player.history.id_team.id player.player.id %}">
+                            {{ player.player.name }} {{ player.player.surname }}
+                        </a>
+                        {% endif %}
                     </li>
                     {% endfor %}
                 </ul>

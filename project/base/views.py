@@ -105,3 +105,53 @@ def players_football(request, league_id=None, team_id=None, player_id = None):
         'type_view': 'players'
     }
     return render(request, 'base/players.html', context)
+
+def players_hockey(request, league_id=None, team_id=None, player_id = None):
+    category = Category.objects.get(name='Ice Hockey')
+    leagues = League.objects.filter(id_category=category)
+    teams = None
+    players = None
+    player_info = None
+    if league_id:
+        teams = Team.objects.filter(id_league=league_id)
+        if team_id:
+            player_histories = PlayerHistory.objects.filter(Q(id_team=team_id) & (Q(end_date__isnull=True) | Q(end_date__gte=timezone.now())))
+            players = [{'player': history.id_player, 'history': history} for history in player_histories]
+            if player_id:
+                player = Player.objects.get(id=player_id)
+                player_history = PlayerHistory.objects.filter(id_player=player_id)
+                player_info = {'player': player, 'history': player_history}
+    context = {
+        'leagues': leagues,
+        'teams': teams,
+        'players': players,
+        'player_info': player_info,
+        'title': 'Ice Hockey Players',
+        'type_view': 'players'
+    }
+    return render(request, 'base/players.html', context)
+
+def players_basketball(request, league_id=None, team_id=None, player_id = None):
+    category = Category.objects.get(name='Basketball')
+    leagues = League.objects.filter(id_category=category)
+    teams = None
+    players = None
+    player_info = None
+    if league_id:
+        teams = Team.objects.filter(id_league=league_id)
+        if team_id:
+            player_histories = PlayerHistory.objects.filter(Q(id_team=team_id) & (Q(end_date__isnull=True) | Q(end_date__gte=timezone.now())))
+            players = [{'player': history.id_player, 'history': history} for history in player_histories]
+            if player_id:
+                player = Player.objects.get(id=player_id)
+                player_history = PlayerHistory.objects.filter(id_player=player_id)
+                player_info = {'player': player, 'history': player_history}
+    context = {
+        'leagues': leagues,
+        'teams': teams,
+        'players': players,
+        'player_info': player_info,
+        'title': 'Basketball Players',
+        'type_view': 'players'
+    }
+    return render(request, 'base/players.html', context)

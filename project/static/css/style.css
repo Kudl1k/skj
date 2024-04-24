@@ -1,7 +1,66 @@
-body, html {
+html, body {
     height: 100%;
 }
 
-.bg {
-    background-color: blue;
+body {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+    padding-bottom: 5px;
+}
+.category-navbar-cointainer{
+    display: flex;
+    justify-content: center;
+}
+
+.glass-effect{
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.main-navbar{
+    width: 90%;
+}
+
+.category-navbar{
+    width: 50%;
+}
+
+.navbar-logo{
+    border-radius: 5px;
+    margin-right: 5px;
+}
+
+@media (min-width: 576px) {
+    #navbarNavDropdown {
+        margin-left: -50px; 
+    }
+}
+
+@media (max-width: 500px) {
+    
+}
+
+.user-button{
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.container-fluid.main-container{
+    height: 500px;
 }
