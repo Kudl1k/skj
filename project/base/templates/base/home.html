@@ -1,4 +1,5 @@
 {% extends 'main.html' %}
+{% include 'category_navbar.html' %}
 
 {% block title %}
 Results page
@@ -16,23 +17,23 @@ Results page
                     <ul class="list-group">
                         {% for league in leagues %}
                             {% if league.id_category.name == "Football" %}
-                                <a href="{% url 'football_league' league.id %}">
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="{% url 'football_league' league.id %}">
                                         {{ league.name }}
-                                    </li>
-                                </a>
+                                    </a>
+                                </li>
                             {% elif league.id_category.name == "Basketball" %}
-                                <a href="{% url 'basketball_league' league.id %}">
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="{% url 'basketball_league' league.id %}">
                                         {{ league.name }}
-                                    </li>
-                                </a>
+                                    </a>
+                                </li>
                             {% elif league.id_category.name == "Ice Hockey" %}
-                                <a href="{% url 'hockey_league' league.id %}">
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="{% url 'hockey_league' league.id %}">
                                         {{ league.name }}
-                                    </li>
-                                </a>
+                                    </a>
+                                </li>
                             {% endif %}
                         {% endfor %}
                     </ul>
@@ -43,27 +44,36 @@ Results page
                     <h3 class="page-title">Matches</h3>
                     <ul class="list-group">
                         {% for match in matches %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center ">
-                            {% if match.id_category.name == "Football" %}
-                                <a href="{% url 'football_match' match.id_league.id match.id %}">
-                                    {{ match.id_team_1.name }} vs {{ match.id_team_2.name }}
-                                </a>
-                                <span class="badge bg-primary rounded-pill">{{ match.start_time }}</span>
-                            {% elif match.id_category.name == "Basketball" %}
-                                <a href="{% url 'basketball_match' match.id_league.id match.id %}">
-                                    {{ match.id_team_1.name }} vs {{ match.id_team_2.name }}
-                                </a>
-                                <span class="badge bg-primary rounded-pill">{{ match.start_time }}</span>
-                            {% elif match.id_category.name == "Ice Hockey" %}
-                                <a href="{% url 'hockey_match' match.id_league.id match.id %}">
-                                    {{ match.id_team_1.name }} vs {{ match.id_team_2.name }}
-                                </a>
-                                <span class="badge bg-primary rounded-pill">{{ match.start_time }}</span>
-                            {% endif %}
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="d-flex">
+                                <div class="match-date me-3 align-self-center">{{ match.start_time|date:"d-m-y" }}</div>
+                                <div>
+                                    {% if match.id_category.name == "Football" %}
+                                        <a href="{% url 'football_match' match.id_league.id match.id %}" class="match-teams">
+                                            <div>{{ match.id_team_1.name }}</div>
+                                            <div>{{ match.id_team_2.name }}</div>
+                                        </a>
+                                    {% elif match.id_category.name == "Basketball" %}
+                                        <a href="{% url 'basketball_match' match.id_league.id match.id %}" class="match-teams">
+                                            <div>{{ match.id_team_1.name }}</div>
+                                            <div>{{ match.id_team_2.name }}</div>
+                                        </a>
+                                    {% elif match.id_category.name == "Ice Hockey" %}
+                                        <a href="{% url 'hockey_match' match.id_league.id match.id %}" class="match-teams">
+                                            <div>{{ match.id_team_1.name }}</div>
+                                            <div>{{ match.id_team_2.name }}</div>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="match-result text-end">
+                                <div>{{ match.score_1 }}</div>
+                                <div>{{ match.score_2 }}</div>
+                            </div>
                         </li>
-                        {% empty %}
+                    {% empty %}
                         <li class="list-group-item">Please select a league to view matches.</li>
-                        {% endfor %}
+                    {% endfor %}
                     </ul>
                 </div>
             </div>
@@ -72,12 +82,28 @@ Results page
                 <div class="league-div glass-effect">
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <h5>{{ selected_match.id_team_1.name }} vs {{ selected_match.id_team_2.name }}</h5>
-                            <p>Score: {{ selected_match.score_1 }} - {{ selected_match.score_2 }}</p>
-                            <p>Start Time: {{ selected_match.start_time }}</p>
-                            <p>End Time: {{ selected_match.end_time }}</p>
-                            <p>Viewers: {{ selected_match.viewers }}</p>
-                            <p>Stadium: {{ selected_match.stadium }}</p>
+                            <h5 class="page-title">{{ selected_match.id_team_1.name }} vs {{ selected_match.id_team_2.name }}</h5>
+                            <h1 class="page-title">{{ selected_match.score_1 }} - {{ selected_match.score_2 }}</h1>
+                            <p class="page-title">{{ selected_match.start_time }}</p>
+                            <div class="page-title" style="justify-content: space-around;">
+                                <span>{{ selected_match.stadium }}</span>
+                                <span>Viewers: {{ selected_match.viewers }}</span>
+                            </div>
+                            <h6 class="page-title">Match evolution</h6>
+                            {% if match_history|length > 0 %}
+                                <div class="page-title">
+                                    <p class"page-title">0 - 0</p>
+                                </div>
+                            {% endif %}
+                            {% for match_his in match_history %}
+                                <div class="page-title">
+                                    <p class"page-title">{{match_his.new_score1}} - {{match_his.new_score2}}</p>
+                                </div>
+                            {% empty %}
+                                <div class="page-title">
+                                    <p class="page-title">No match history information available.</p>
+                                </div>
+                            {% endfor %}
                         </li>
                     </ul>
                 </div>

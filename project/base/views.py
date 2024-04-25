@@ -1,19 +1,25 @@
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.utils import timezone
-from .models import League, Category, Match, Team, Player, PlayerHistory
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import logout as auth_logout
+from .models import League, Category, Match, Team, Player, PlayerHistory, EditHistory
+from .forms import UserLoginForm, UserRegistrationForm
 
 # Create your views here.
 
 def home(request, league_id=None, match_id=None):
     match = None
+    match_history = None
     category = Category.objects.get(name='Football')
     leagues = League.objects.filter(id_category=category)
     if league_id:
         league = League.objects.get(id=league_id)
         if match_id:
             match = Match.objects.get(id=match_id)
+            match_history = EditHistory.objects.filter(id_match=match_id)
         else:
             match = None
         matches = Match.objects.filter(id_league=league)
@@ -24,6 +30,7 @@ def home(request, league_id=None, match_id=None):
         'leagues': leagues,
         'matches': matches,
         'selected_match': match,
+        'match_history': match_history,
         'title': 'Football Results',
         'type_view': 'results',
     }
@@ -75,11 +82,36 @@ def basketball(request, league_id=None,match_id= None):
     }
     return render(request, 'base/home.html', context)
 
-def login(request):
-    return render(request, 'base/login.html')
+def user_login(request):
+    if request.method == 'POST':
+        form = UserLoginForm(request.POST)
+        if form.is_valid():
+            user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+    else:
+        form = UserLoginForm()
+    return render(request, 'base/login.html', {'form': form})
 
-def signup(request):
-    return render(request, 'base/singup.html')
+def user_logout(request):
+    auth_logout(request)
+    return redirect('login')
+
+
+def user_signup(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponse('User created successfully')
+        else:
+            return HttpResponse(f'Form is not valid: {form.errors}')
+    else:
+        form = UserRegistrationForm()
+
+    context = { 'form': form }
+    return render(request, 'base/signup.html', context)
 
 def players_football(request, league_id=None, team_id=None, player_id = None):
     category = Category.objects.get(name='Football')

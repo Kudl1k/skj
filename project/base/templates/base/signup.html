@@ -1,0 +1,42 @@
+{% extends 'main.html' %}
+{% block title %} Registrace {% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h2>Registrace</h2>
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.username.auto_id }}">Uživatelské jméno:</label>
+                    {{ form.username }}
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.email.auto_id }}">Email:</label>
+                    {{ form.email }}
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.password1.auto_id }}">Heslo:</label>
+                    {{ form.password1 }}
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.password2.auto_id }}">Potvrzení hesla:</label>
+                    {{ form.password2 }}
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.first_name.auto_id }}">Jméno:</label>
+                    {{ form.first_name }}
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.last_name.auto_id }}">Příjmení:</label>
+                    {{ form.last_name }}
+                </div>
+                <button type="submit" class="btn btn-success">Registrovat</button>
+            </form>
+            <p>Již máte účet? Přihlaste se <a href="{% url 'login' %}">zde</a>.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
