@@ -68,6 +68,15 @@ body {
     margin-top: 5px;
 }
 
+.main-container{
+    height: calc(100vh - 165px);
+    width: 90%;
+    justify-content: center;
+    padding: 10px;
+    margin-top: 5px;
+}
+
+
 .category-icon{
     margin-right: 5px;
 }

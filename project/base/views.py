@@ -5,7 +5,8 @@ from django.db.models import Q
 from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import logout as auth_logout
-from .models import League, Category, Match, Team, Player, PlayerHistory, EditHistory
+from django.contrib.auth.decorators import login_required
+from .models import League, Category, Match, Team, Player, PlayerHistory, EditHistory, Favourite
 from .forms import UserLoginForm, UserRegistrationForm
 
 # Create your views here.
@@ -15,6 +16,9 @@ def home(request, league_id=None, match_id=None):
     match_history = None
     category = Category.objects.get(name='Football')
     leagues = League.objects.filter(id_category=category)
+    favourites = []
+    if request.user.is_authenticated:
+        favourites = Favourite.objects.filter(user=request.user).values_list('id_match_id', flat=True)
     if league_id:
         league = League.objects.get(id=league_id)
         if match_id:
@@ -25,12 +29,12 @@ def home(request, league_id=None, match_id=None):
         matches = Match.objects.filter(id_league=league)
     else:
         matches = None
-
     context = {
         'leagues': leagues,
         'matches': matches,
         'selected_match': match,
         'match_history': match_history,
+        'favourites': favourites,
         'title': 'Football Results',
         'type_view': 'results',
     }
@@ -195,3 +199,21 @@ def players_basketball(request, league_id=None, team_id=None, player_id = None):
         'type_view': 'players'
     }
     return render(request, 'base/players.html', context)
+
+@login_required
+def favourite_match(request, match_id):
+    match = get_object_or_404(Match, id=match_id)
+    favourite, created = Favourite.objects.get_or_create(user=request.user, id_match=match)
+    if not created:
+        favourite.delete()
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+def edit_match(request, match_id):
+    match = Match.objects.get(id=match_id)
+    match_history = EditHistory.objects.filter(id_match=match_id)
+    context = {
+        'title': 'Edit Match',
+        'match': match,
+        'match_history': match_history
+    }
+    return render(request,'base/edit_match.html',context)

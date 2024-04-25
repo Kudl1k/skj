@@ -1,0 +1,15 @@
+{% extends 'main.html' %}
+{% include 'category_navbar.html' %}
+
+{% block title %}
+Edit match
+{% endblock %}
+
+{% block content %}
+<div class="container main-container glass-effect">
+    <h1 class="page-title">{{ match.id_team_1.name }} - {{match.id_team_2.name}}</h1>
+</div>
+
+
+
+{% endblock %}

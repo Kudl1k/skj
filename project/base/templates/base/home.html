@@ -90,7 +90,9 @@ Results page
                                     <span>{{ selected_match.stadium }}</span>
                                     <span>Viewers: {{ selected_match.viewers }}</span>
                                 </div>
-                                <i style="position: absolute; top: 0; right: 0; font-size: 24px" id="star" class="bi bi-star"></i>
+                                <a href="{% url 'favourite_match' selected_match.id %}">
+                                    <i style="position: absolute; top: 0; right: 0; font-size: 24px" id="star" class="{% if selected_match.id in favourites %}bi bi-star-fill{% else %}bi bi-star{% endif %}"></i>
+                                </a>
                                 <h6 class="page-title">Match evolution</h6>
                                 {% if match_history|length > 0 %}
                                     <div class="page-title">
@@ -106,6 +108,12 @@ Results page
                                         <p class="page-title">No match history information available.</p>
                                     </div>
                                 {% endfor %}
+                                {% if request.user.is_superuser %}
+                                <div class="page-title justify-content-around">
+                                    <a href="{% url 'edit_match' selected_match.id %}" class="btn btn-primary">Edit Match</a>
+                                    <a href="{% url 'delete_match' selected_match.id %}" class="btn btn-danger">Delete Match</a>
+                                </div>
+                                {% endif %}
                             </div>
                         </li>
                     </ul>
