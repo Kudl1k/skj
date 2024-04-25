@@ -2,19 +2,23 @@
 {% block title %} Přihlášení {% endblock %}
 
 {% block content %}
-<div class="container-lg glass-effect main-container">
-<form method="POST">
-    {% csrf_token %}
-    <div class="form-group">
-        <label for="id_username">Uživatelské jméno:</label>
-        {{ form.username }}
+<div class="container-lg outside-container">
+    <div class="glass-effect form-container">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+              <input type="text" class="form-control" placeholder="Username" name="{{ form.username.name }}">
+            </div>
+            <div class="mb-3">
+              <input type="password" class="form-control" placeholder="Password" name="{{ form.password.name }}">
+            </div>
+            <div class="page-title">
+                <button type="submit" class="btn submit-button">Submit</button>
+            </div>
+        <p>Don't have an account? Sign up <a href="/signup">here</a></p>
+
+        </form>
     </div>
-    <div class="form-group">
-        <label for="id_password">Heslo:</label>
-        {{ form.password }}
-    </div>
-    <button type="submit" class="btn btn-success">Přihlásit</button>
-</form>
 </div>
 {% comment %} <p>Nemáte účet? Vytvořte si <a href="{% url 'signup' %}">zde</a>.</p> {% endcomment %}
 {% endblock %}

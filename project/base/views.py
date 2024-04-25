@@ -92,7 +92,12 @@ def user_login(request):
                 return redirect('home')
     else:
         form = UserLoginForm()
-    return render(request, 'base/login.html', {'form': form})
+
+    context = { 
+        'form': form,
+        'title': "Log in"
+    }
+    return render(request, 'base/login.html', context)
 
 def user_logout(request):
     auth_logout(request)
@@ -110,7 +115,10 @@ def user_signup(request):
     else:
         form = UserRegistrationForm()
 
-    context = { 'form': form }
+    context = { 
+        'form': form,
+        'title': "Sign in"
+    }
     return render(request, 'base/signup.html', context)
 
 def players_football(request, league_id=None, team_id=None, player_id = None):

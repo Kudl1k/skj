@@ -82,28 +82,31 @@ Results page
                 <div class="league-div glass-effect">
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <h5 class="page-title">{{ selected_match.id_team_1.name }} vs {{ selected_match.id_team_2.name }}</h5>
-                            <h1 class="page-title">{{ selected_match.score_1 }} - {{ selected_match.score_2 }}</h1>
-                            <p class="page-title">{{ selected_match.start_time }}</p>
-                            <div class="page-title" style="justify-content: space-around;">
-                                <span>{{ selected_match.stadium }}</span>
-                                <span>Viewers: {{ selected_match.viewers }}</span>
+                            <div style="position: relative;">
+                                <h5 class="page-title">{{ selected_match.id_team_1.name }} vs {{ selected_match.id_team_2.name }}</h5>
+                                <h1 class="page-title">{{ selected_match.score_1 }} - {{ selected_match.score_2 }}</h1>
+                                <p class="page-title">{{ selected_match.start_time }}</p>
+                                <div class="page-title" style="justify-content: space-around;">
+                                    <span>{{ selected_match.stadium }}</span>
+                                    <span>Viewers: {{ selected_match.viewers }}</span>
+                                </div>
+                                <i style="position: absolute; top: 0; right: 0; font-size: 24px" id="star" class="bi bi-star"></i>
+                                <h6 class="page-title">Match evolution</h6>
+                                {% if match_history|length > 0 %}
+                                    <div class="page-title">
+                                        <p class"page-title">0 - 0</p>
+                                    </div>
+                                {% endif %}
+                                {% for match_his in match_history %}
+                                    <div class="page-title">
+                                        <p class"page-title">{{match_his.new_score1}} - {{match_his.new_score2}}</p>
+                                    </div>
+                                {% empty %}
+                                    <div class="page-title">
+                                        <p class="page-title">No match history information available.</p>
+                                    </div>
+                                {% endfor %}
                             </div>
-                            <h6 class="page-title">Match evolution</h6>
-                            {% if match_history|length > 0 %}
-                                <div class="page-title">
-                                    <p class"page-title">0 - 0</p>
-                                </div>
-                            {% endif %}
-                            {% for match_his in match_history %}
-                                <div class="page-title">
-                                    <p class"page-title">{{match_his.new_score1}} - {{match_his.new_score2}}</p>
-                                </div>
-                            {% empty %}
-                                <div class="page-title">
-                                    <p class="page-title">No match history information available.</p>
-                                </div>
-                            {% endfor %}
                         </li>
                     </ul>
                 </div>
@@ -112,5 +115,13 @@ Results page
         </div>
     </div>
 </div>
-
+<script>
+    document.getElementById('star').addEventListener('click', function() {
+        if (this.classList.contains('bi-star')) {
+            this.className = 'bi bi-star-fill';
+        } else {
+            this.className = 'bi bi-star';
+        }
+    });
+</script>
 {% endblock %}
