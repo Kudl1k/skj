@@ -6,8 +6,9 @@ from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
+from datetime import datetime
 from .models import League, Category, Match, Team, Player, PlayerHistory, EditHistory, Favourite
-from .forms import UserLoginForm, UserRegistrationForm
+from .forms import UserLoginForm, UserRegistrationForm, EditMatchForm, AddMatchHistoryForm
 
 # Create your views here.
 
@@ -208,12 +209,40 @@ def favourite_match(request, match_id):
         favourite.delete()
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
+@login_required
 def edit_match(request, match_id):
     match = Match.objects.get(id=match_id)
     match_history = EditHistory.objects.filter(id_match=match_id)
+    form1 = EditMatchForm(instance=match)
+    form2 = AddMatchHistoryForm()
+
+    if request.method == 'POST':
+        print(request.POST)
+        if 'form1' in request.POST:
+            date_string = request.POST['start_time_date']
+            time_string = request.POST['start_time_time']
+            match.start_time = timezone.make_aware(datetime.strptime(f"{date_string} {time_string}", "%Y-%m-%d %H:%M"))
+            match.viewers = request.POST['viewers']
+            match.stadium = request.POST['stadium']
+            match.save()  # Save the match instance after updating start_time
+        elif 'form2' in request.POST:
+            new_history = EditHistory()
+            new_history.id_match = match
+            new_history.user = request.user
+            new_history.old_score1 = match.score_1
+            new_history.old_score2 = match.score_2
+            new_history.new_score1 = request.POST['new_score1']
+            new_history.new_score2 = request.POST['new_score2']
+            match.score_1 = new_history.new_score1
+            match.score_2 = new_history.new_score2
+            new_history.modified_at = timezone.now()
+            new_history.save()
+            match.save()
     context = {
         'title': 'Edit Match',
         'match': match,
-        'match_history': match_history
+        'match_history': match_history,
+        'form1': form1,
+        'form2': form2
     }
     return render(request,'base/edit_match.html',context)

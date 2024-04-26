@@ -61,7 +61,6 @@ body {
 }
 
 .container-lg.main-container{
-    height: calc(100vh - 165px);
     width: 90%;
     justify-content: center;
     padding: 10px;
