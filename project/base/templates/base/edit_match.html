@@ -6,8 +6,65 @@ Edit match
 {% endblock %}
 
 {% block content %}
-<div class="container main-container glass-effect">
-    <h1 class="page-title">{{ match.id_team_1.name }} - {{match.id_team_2.name}}</h1>
+<div class="container-lg main-container glass-effect" >
+        <div class="col">
+            <form>
+                <h5 class="page-title">{{ match.id_team_1.name }} vs {{ match.id_team_2.name }}</h5>
+                <h1 class="page-title">{{ match.score_1 }} - {{ match.score_2 }}</h1>
+                <p class="page-title">Start time</p>
+                <div class="mb-3">
+                    <div class="row">
+                        <div class="col" style="padding-right: 10px;">
+                            <input type="date" class="form-control" style="max-width: 50%;margin-left: auto;" value="{{ match.start_time|date:'Y-m-d' }}" >
+                        </div>
+                        <div class="col" style="padding-left: 10px;">
+                            <input type="time" class="form-control" style="max-width: 50%;" value="{{ match.start_time|time:'H:i' }}" >
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="row">
+                        <div class="col" style="padding-right: 10px;">
+                            <p style="max-width: 50%;margin-left: auto;" class="page-title">Stadium</p>
+                            <input type="text" class="form-control" style="max-width: 50%;margin-left: auto;" value="{{ match.stadium }}" >
+                        </div>
+                        <div class="col" style="padding-left: 10px;">
+                            <p style="max-width: 50%;" class="page-title">Viewers</p>
+                            <input type="text" class="form-control" style="max-width: 50%;" value="{{ match.viewers }}" >
+                        </div>
+                    </div>
+                </div>
+                <h6 class="page-title">Match evolution</h6>
+                <div class="mb-3">
+                    <div class="row">
+                        <div class="col" style="padding-right: 10px;">
+                            <p style="max-width: 30%;margin-left: auto;" class="page-title">{{ match.id_team_1.name }}</p>
+                            <input type="number" class="form-control" style="max-width: 30%;margin-left: auto;" value="{{ match.score_1 }}" >
+                        </div>
+                        <div class="col" style="padding-left: 10px;">
+                            <p style="max-width: 30%;" class="page-title">{{ match.id_team_2.name }}</p>
+                            <input type="number" class="form-control" style="max-width: 30%;" value="{{ match.score_2 }}" >
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <a href="" class="btn btn-primary" style="margin-bottom: 10px">Add</a>
+                </div>
+                <div class="page-title">
+                    <p class"page-title">0 - 0</p>
+                </div>
+                {% for match_his in match_history %}
+                    <div class="row">
+                        <div class="col" style="padding-right: 10px;">
+                            <p class="page-title" style="max-width: 50%;margin-left: auto; display: flex;align-items: right;justify-content: right;">{{match_his.new_score1}} - {{match_his.new_score2}}</p>
+                        </div>
+                        <div class="col" style="padding-left: 10px;">
+                            <p class="ml-3">{{match_his.user}} ({{match_his.modified_at|date:'Y-m-d H:i:s'}})</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </form>
+        </div>
 </div>
 
 
