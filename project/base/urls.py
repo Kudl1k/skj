@@ -7,6 +7,9 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('add-match-favourite/<int:match_id>',views.favourite_match,name='favourite_match'),
     path('', views.home, name="home"),
+    path('create-league/<int:category_id>', views.create_league, name="create_league"),
+    path('create-team/<int:category_id>/<int:league_id>', views.create_team, name="create_team"),
+    path('create-player/<int:category_id>/<int:league_id>/<int:team_id>', views.create_player, name="create_player"),
     path('create-match/<int:category_id>/<int:league_id>', views.create_match, name="create_match"),
     path('edit-match/<int:match_id>', views.edit_match, name="edit_match"),
     path('delete-match/<int:match_id>', views.delete_match, name="delete_match"),

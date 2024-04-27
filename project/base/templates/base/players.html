@@ -25,11 +25,14 @@ Players Page
                             {% endif %}
                         </li>
                         {% endfor %}
+                        <li class="list-group-item d-flex justify-content-center align-items-center">
+                            <a href="{% url 'create_league' selected_category.id %}" class="btn btn-primary">Add League</a>
+                        </li>
                     </ul>
                 </div>
             </div>
             <div class="col">
-                {% if teams|length > 0 %}
+                {% if selected_league %}
                 <div class="league-div glass-effect">
                     <h3 class="page-title">Teams</h3>
                     <ul class="list-group">
@@ -49,15 +52,16 @@ Players Page
                             </a>
                             {% endif %}
                         </li>
-                        {% empty %}
-                        <li class="list-group-item">Please select a league to view teams.</li>
-                        {% endfor %}
+                        {% endfor%}
+                        <li class="list-group-item d-flex justify-content-center align-items-center">
+                            <a href="{% url 'create_team' selected_category.id selected_league.id %}" class="btn btn-primary">Add Team</a>
+                        </li>
                     </ul>
                 </div>
                 {% endif %}
             </div>
             <div class="col">
-                {% if players|length > 0 %}
+                {% if selected_team %}
                 <div class="league-div glass-effect">
                     <h3 class="page-title">Players</h3>
                     <ul class="list-group">
@@ -77,9 +81,10 @@ Players Page
                             </a>
                             {% endif %}
                         </li>
-                        {% empty %}
-                        <li class="list-group-item">Please select a team to view players.</li>
                         {% endfor %}
+                        <li class="list-group-item d-flex justify-content-center align-items-center">
+                            <a href="{% url 'create_player' selected_category.id selected_league.id selected_team.id %}" class="btn btn-primary">Add Player</a>
+                        </li>
                     </ul>
                 </div>
                 {% endif %}
@@ -97,7 +102,6 @@ Players Page
                                     <strong>Until:</strong> {{ history.end_date }}<br>
                                     {% endif %}
                                 {% endfor %}
-
                             </li>
                         </ul>
                     </div>
