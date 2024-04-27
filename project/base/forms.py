@@ -21,3 +21,8 @@ class AddMatchHistoryForm(forms.ModelForm):
     class Meta:
         model = EditHistory
         fields = ['id_match', 'new_score1', 'new_score2', 'modified_at', 'user']
+
+class CreateMatchForm(forms.ModelForm):
+    class Meta:
+        model = Match
+        fields = ['id_team_1','id_team_2','start_time','stadium','viewers']

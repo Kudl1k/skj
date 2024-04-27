@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
-from datetime import datetime
+from datetime import datetime, timedelta
 from .models import League, Category, Match, Team, Player, PlayerHistory, EditHistory, Favourite
 from .forms import UserLoginForm, UserRegistrationForm, EditMatchForm, AddMatchHistoryForm
 
@@ -15,6 +15,7 @@ from .forms import UserLoginForm, UserRegistrationForm, EditMatchForm, AddMatchH
 def home(request, league_id=None, match_id=None):
     match = None
     match_history = None
+    league = None
     category = Category.objects.get(name='Football')
     leagues = League.objects.filter(id_category=category)
     favourites = []
@@ -34,6 +35,8 @@ def home(request, league_id=None, match_id=None):
         'leagues': leagues,
         'matches': matches,
         'selected_match': match,
+        'selected_league': league,
+        'selected_category': category,
         'match_history': match_history,
         'favourites': favourites,
         'title': 'Football Results',
@@ -246,3 +249,58 @@ def edit_match(request, match_id):
         'form2': form2
     }
     return render(request,'base/edit_match.html',context)
+
+def delete_match(request, match_id):
+    match = Match.objects.get(id=match_id)
+    match.delete()
+    football_category = Category.objects.get(name='Football')
+    basketball_category = Category.objects.get(name='Basketball')
+    hockey_category = Category.objects.get(name='Ice Hockey')
+    if match.id_category == football_category:
+        return redirect('/football/results')
+    if match.id_category == basketball_category:
+        return redirect('/basketball/results')
+    if match.id_category == hockey_category:
+        return redirect('/hockey/results')
+    return redirect('/football/results')
+
+@login_required
+def create_match(request,category_id,league_id):
+    teams = Team.objects.filter(id_league=league_id)
+    category = Category.objects.get(id=category_id)
+    league = League.objects.get(id=league_id)
+
+    context = {
+        'selected_category': category_id,
+        'selected_league': league_id,
+        'teams': teams
+    }
+    if request.method == 'POST':
+        if 'form1' in request.POST:
+            match = Match()
+            date_string = request.POST['start_time_date']
+            time_string = request.POST['start_time_time']
+            team_1 = Team.objects.get(id=request.POST['id_team_1'])
+            team_2 = Team.objects.get(id=request.POST['id_team_2'])
+            match.score_1 = 0
+            match.score_2 = 0
+            match.start_time = timezone.make_aware(datetime.strptime(f"{date_string} {time_string}", "%Y-%m-%d %H:%M"))
+            match.end_time = match.start_time + timedelta(hours=1.5)
+            match.viewers = request.POST['viewers']
+            match.stadium = request.POST['stadium']
+            match.id_category = category
+            match.id_league = league
+            match.user = request.user
+            match.id_team_1 = team_1
+            match.id_team_2 = team_2
+            match.save()
+            football_category = Category.objects.get(name='Football')
+            basketball_category = Category.objects.get(name='Basketball')
+            hockey_category = Category.objects.get(name='Ice Hockey')
+            if category == football_category:
+                return redirect('/football/results')
+            if category == basketball_category:
+                return redirect('/basketball/results')
+            if category == hockey_category:
+                return redirect('/hockey/results')    
+    return render(request,'base/create_match.html',context)

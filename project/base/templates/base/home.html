@@ -74,6 +74,11 @@ Results page
                     {% empty %}
                         <li class="list-group-item">Please select a league to view matches.</li>
                     {% endfor %}
+                    {% if selected_league %}
+                        <li class="list-group-item d-flex justify-content-center align-items-center">
+                            <a href="{% url 'create_match' selected_category.id selected_league.id %}" class="btn btn-primary">Add Match</a>
+                        </li>
+                    {% endif %}
                     </ul>
                 </div>
             </div>

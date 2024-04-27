@@ -1,0 +1,65 @@
+{% extends 'main.html' %}
+{% include 'category_navbar.html' %}
+
+{% block title %}
+Create Match
+{% endblock %}
+
+{% block content %}
+<div class="container-lg main-container " style="display: flex; justify-content: center;align-items: center;">
+    <div class="glass-effect form-container">
+        <div class="col">
+            <h1 class="page-title">Create Match</h1>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <div class="row">
+                        <div class="col">
+                            <select class="form-select form-select-lg" name="id_team_1" style="max-width: 50%;margin-left: auto;" aria-label=".form-select-sm example">
+                                {% for team in teams %}
+                                    <option value="{{ team.id }}">{{team.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select class="form-select form-select-lg" name="id_team_2" style="max-width: 50%;" aria-label=".form-select-sm example">
+                                {% for team in teams %}
+                                    <option value="{{ team.id }}">{{team.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="row">
+                        <div class="col" style="padding-right: 10px;">
+                            <input type="date" class="form-control" style="max-width: 50%;margin-left: auto;" value="{{ match.start_time|date:'Y-m-d' }}" name="start_time_date">
+                        </div>
+                        <div class="col" style="padding-left: 10px;">
+                            <input type="time" class="form-control" style="max-width: 50%;" value="{{ match.start_time|time:'H:i' }}" name="start_time_time">
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="row">
+                        <input type="text" class="form-control" style="max-width: 50%; margin: auto" value="{{ match.stadium }}" name="stadium" >
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="row">
+                        <input type="number" class="form-control" style="max-width: 50%; margin: auto" value="{{ match.viewers }}" name="viewers" >
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="d-flex justify-content-center">
+                        <button class="btn btn-primary" name="form1"type="submit">
+                            Create
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
