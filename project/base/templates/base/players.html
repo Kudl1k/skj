@@ -23,11 +23,19 @@ Players Page
                             {% elif league.id_category.name == "Ice Hockey" %}
                                 <a href="{% url 'hockey_league_players' league.id %}">{{ league.name }}</a>
                             {% endif %}
+                            {% if request.user.is_superuser %}
+                            <button class="btn btn-danger ml-auto">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                            {% endif %}
                         </li>
                         {% endfor %}
-                        <li class="list-group-item d-flex justify-content-center align-items-center">
-                            <a href="{% url 'create_league' selected_category.id %}" class="btn btn-primary">Add League</a>
-                        </li>
+                        {% if request.user.is_superuser %}
+                            <li class="list-group-item d-flex justify-content-center align-items-center">
+                                <a href="{% url 'create_league' selected_category.id %}" class="btn btn-primary">Add League</a>
+                            </li>
+                        {% endif %}
+                        
                     </ul>
                 </div>
             </div>
@@ -51,11 +59,14 @@ Players Page
                                 {{ team.name }}
                             </a>
                             {% endif %}
+                            
                         </li>
                         {% endfor%}
+                        {% if request.user.is_superuser %}
                         <li class="list-group-item d-flex justify-content-center align-items-center">
                             <a href="{% url 'create_team' selected_category.id selected_league.id %}" class="btn btn-primary">Add Team</a>
                         </li>
+                        {% endif %}
                     </ul>
                 </div>
                 {% endif %}
@@ -82,9 +93,11 @@ Players Page
                             {% endif %}
                         </li>
                         {% endfor %}
+                        {% if request.user.is_superuser %}
                         <li class="list-group-item d-flex justify-content-center align-items-center">
                             <a href="{% url 'create_player' selected_category.id selected_league.id selected_team.id %}" class="btn btn-primary">Add Player</a>
                         </li>
+                        {% endif %}
                     </ul>
                 </div>
                 {% endif %}

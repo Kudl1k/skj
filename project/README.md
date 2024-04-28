@@ -6,7 +6,7 @@ This is my semestral project for subject (SKJ). It is very light version of [Liv
 - [ ] favourite page
 - [ ] edit team in players page
 - [ ] edit player in players page
-- [ ] edit league in players page
+- [ ] delete league in players page
 - [x] add team in players page
 - [x] add player in players page
 - [x] add league in players page

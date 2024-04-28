@@ -184,12 +184,17 @@ def players_football(request, league_id=None, team_id=None, player_id = None):
 def players_hockey(request, league_id=None, team_id=None, player_id = None):
     category = Category.objects.get(name='Ice Hockey')
     leagues = League.objects.filter(id_category=category)
+    league = None
     teams = None
+    team = None
+    player = None
     players = None
     player_info = None
     if league_id:
+        league = League.objects.get(id=league_id)
         teams = Team.objects.filter(id_league=league_id)
         if team_id:
+            team = Team.objects.get(id=team_id)
             player_histories = PlayerHistory.objects.filter(Q(id_team=team_id) & (Q(end_date__isnull=True) | Q(end_date__gte=timezone.now())))
             players = [{'player': history.id_player, 'history': history} for history in player_histories]
             if player_id:
@@ -197,10 +202,14 @@ def players_hockey(request, league_id=None, team_id=None, player_id = None):
                 player_history = PlayerHistory.objects.filter(id_player=player_id)
                 player_info = {'player': player, 'history': player_history}
     context = {
+        'selected_category': category,
         'leagues': leagues,
+        'selected_league': league,
         'teams': teams,
+        'selected_team': team,
         'players': players,
         'player_info': player_info,
+        'selected_player': player,
         'title': 'Ice Hockey Players',
         'type_view': 'players'
     }
@@ -209,12 +218,17 @@ def players_hockey(request, league_id=None, team_id=None, player_id = None):
 def players_basketball(request, league_id=None, team_id=None, player_id = None):
     category = Category.objects.get(name='Basketball')
     leagues = League.objects.filter(id_category=category)
+    league = None
     teams = None
+    team = None
+    player = None
     players = None
     player_info = None
     if league_id:
+        league = League.objects.get(id=league_id)
         teams = Team.objects.filter(id_league=league_id)
         if team_id:
+            team = Team.objects.get(id=team_id)
             player_histories = PlayerHistory.objects.filter(Q(id_team=team_id) & (Q(end_date__isnull=True) | Q(end_date__gte=timezone.now())))
             players = [{'player': history.id_player, 'history': history} for history in player_histories]
             if player_id:
@@ -222,10 +236,14 @@ def players_basketball(request, league_id=None, team_id=None, player_id = None):
                 player_history = PlayerHistory.objects.filter(id_player=player_id)
                 player_info = {'player': player, 'history': player_history}
     context = {
+        'selected_category': category,
         'leagues': leagues,
+        'selected_league': league,
         'teams': teams,
+        'selected_team': team,
         'players': players,
         'player_info': player_info,
+        'selected_player': player,
         'title': 'Basketball Players',
         'type_view': 'players'
     }
