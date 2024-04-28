@@ -30,12 +30,40 @@ Edit Player
                 </div>
                 <p class="page-title">Transfer history</p>
                 {% for history in player.history %}
+                    <div class="mb-3">
+                        <div class="row">
+                            <select class="form-select form-select-sm" name="league" style="max-width: 30%; margin: auto; margin-bottom: 10px;" aria-label=".form-select-sm example">
+                                {% for team in teams %}
+                                <option value="{{ team.id }}" {% if team.id == history.id_team.id %}selected{% endif %}>{{ team.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="row">
+                            <input type="date" class="form-control" value="{{history.start_date|date:'Y-m-d'}}"  style="max-width: 25%; margin-left: auto" name="transferdate{{ forloop.counter0 }}" >
+                            <i class="bi bi-arrow-right" style="align-self: center;max-width: 42px;"></i>
+                            <input type="date" class="form-control" value="{{history.end_date|date:'Y-m-d'}}"  style="max-width: 25%; margin-right: auto" name="transferdate{{ forloop.counter0 }}" >
+                        </div>
+                    </div>
+                {% endfor %}
                 <div class="mb-3">
                     <div class="row">
-                        <input type="date" class="form-control" placeholder=""  style="max-width: 50%; margin: auto" name="transferdate" >
+                        <p class="page-title">
+                            New Transfer
+                        </p>
+                    </div>
+                    <div class="row">
+                        <select class="form-select form-select-sm" name="league" style="max-width: 30%; margin: auto; margin-bottom: 10px;" aria-label=".form-select-sm example">
+                            {% for team in teams %}
+                            <option value="{{ team.id }}" {% if team.id == history.id_team.id %}selected{% endif %}>{{ team.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="row">
+                        <input type="date" class="form-control" value="{{history.start_date|date:'Y-m-d'}}"  style="max-width: 25%; margin-left: auto" name="transferdate{{ forloop.counter0 }}" >
+                        <i class="bi bi-arrow-right" style="align-self: center;max-width: 42px;"></i>
+                        <input type="date" class="form-control" value="{{history.end_date|date:'Y-m-d'}}"  style="max-width: 25%; margin-right: auto" name="transferdate{{ forloop.counter0 }}" >
                     </div>
                 </div>
-                {% endfor %}
                 <div class="mb-3">
                     <div class="d-flex justify-content-center">
                         <button class="btn btn-primary" name="form1"type="submit">

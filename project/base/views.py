@@ -506,8 +506,14 @@ def edit_player(request, player_id):
     player = Player.objects.get(id=player_id)
     player_history = PlayerHistory.objects.filter(id_player=player_id)
     player_info = {'player': player, 'history': player_history}
+    first_history = player_history.first()
+    print(first_history)
+    if first_history:
+        teams = Team.objects.all().filter(id_category = first_history.id_team.id_category.id)
+    print(teams)
     context = {
         'title': 'Edit Player',
+        'teams': teams,
         'player': player_info
     }
     return render(request,'base/edit_player.html',context)
