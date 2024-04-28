@@ -28,12 +28,14 @@ Edit Player
                         <input type="date" class="form-control" placeholder="" value = "{{player.player.birthdate|date:'Y-m-d'}}" style="max-width: 50%; margin: auto" name="birthdaydate" >
                     </div>
                 </div>
-                {% comment %} <div class="mb-3">
+                <p class="page-title">Transfer history</p>
+                {% for history in player.history %}
+                <div class="mb-3">
                     <div class="row">
-                        <label class="page-title form-label">End of transfer</label>
                         <input type="date" class="form-control" placeholder=""  style="max-width: 50%; margin: auto" name="transferdate" >
                     </div>
-                </div> {% endcomment %}
+                </div>
+                {% endfor %}
                 <div class="mb-3">
                     <div class="d-flex justify-content-center">
                         <button class="btn btn-primary" name="form1"type="submit">
