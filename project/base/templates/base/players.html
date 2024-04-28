@@ -24,9 +24,9 @@ Players Page
                                 <a href="{% url 'hockey_league_players' league.id %}">{{ league.name }}</a>
                             {% endif %}
                             {% if request.user.is_superuser %}
-                            <button class="btn btn-danger ml-auto">
+                            <a href="{% url 'delete_league' league.id %}" class="btn btn-danger ml-auto">
                                 <i class="bi bi-x-lg"></i>
-                            </button>
+                            </a>
                             {% endif %}
                         </li>
                         {% endfor %}
@@ -59,7 +59,16 @@ Players Page
                                 {{ team.name }}
                             </a>
                             {% endif %}
-                            
+                            {% if request.user.is_superuser %}
+                            <div>
+                                <a href="{% url 'delete_team' team.id %}" class="btn btn-danger ml-auto">
+                                    <i class="bi bi-x-lg"></i>
+                                </a>
+                                <a href="{% url 'edit_team' team.id %}" class="btn btn-warning ml-auto">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                            </div>
+                            {% endif %}
                         </li>
                         {% endfor%}
                         {% if request.user.is_superuser %}
@@ -90,6 +99,16 @@ Players Page
                             <a href="{% url 'hockey_player_players' player.history.id_team.id_league.id player.history.id_team.id player.player.id %}">
                                 {{ player.player.name }} {{ player.player.surname }}
                             </a>
+                            {% endif %}
+                            {% if request.user.is_superuser %}
+                            <div>
+                                <a href="{% url 'delete_player' player.player.id %}" class="btn btn-danger ml-auto">
+                                    <i class="bi bi-x-lg"></i>
+                                </a>
+                                <a href="{% url 'edit_player' player.player.id %}" class="btn btn-warning ml-auto">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                            </div>
                             {% endif %}
                         </li>
                         {% endfor %}

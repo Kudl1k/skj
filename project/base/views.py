@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from .models import League, Category, Match, Team, Player, PlayerHistory, EditHistory, Favourite
 from .forms import UserLoginForm, UserRegistrationForm, EditMatchForm, AddMatchHistoryForm
 
@@ -430,3 +430,84 @@ def create_player(request, category_id, league_id, team_id):
             if category == hockey_category:
                 return redirect('/hockey/players/' + str(league_id) + '/' + str(team_id)) 
     return render(request,'base/create_player.html',context)
+
+def delete_league(request, league_id):
+    league = League.objects.get(id = league_id)
+    league.delete()
+    football_category = Category.objects.get(name='Football')
+    basketball_category = Category.objects.get(name='Basketball')
+    hockey_category = Category.objects.get(name='Ice Hockey')
+    if league.id_category == football_category:
+        return redirect('/football/players')
+    if league.id_category == basketball_category:
+        return redirect('/basketball/players')
+    if league.id_category == hockey_category:
+        return redirect('/hockey/players')
+    return redirect('/football/players')
+
+def delete_team(request, team_id):
+    team = Team.objects.get(id = team_id)
+    team.delete()
+    football_category = Category.objects.get(name='Football')
+    basketball_category = Category.objects.get(name='Basketball')
+    hockey_category = Category.objects.get(name='Ice Hockey')
+    if team.id_category == football_category:
+        return redirect('/football/players/' + str(team.id_league.id))
+    if team.id_category == basketball_category:
+        return redirect('/basketball/players/' + str(team.id_league.id))
+    if team.id_category == hockey_category:
+        return redirect('/hockey/players/' + str(team.id_league.id))
+    return redirect('/football/players')
+
+def edit_team(request, team_id):
+    team = Team.objects.get(id= team_id)
+    leagues = League.objects.all().filter(id_category = team.id_category)
+    context = {
+        'title': 'Edit Team',
+        'leagues': leagues,
+        'team': team
+    }
+    if request.method == 'POST':
+        if 'form1' in request.POST:
+            print(request.POST)
+
+            team.name = request.POST['name']
+            selected_league = leagues.get(id = request.POST['league'])
+            team.id_league = selected_league
+            team.save()
+            football_category = Category.objects.get(name='Football')
+            basketball_category = Category.objects.get(name='Basketball')
+            hockey_category = Category.objects.get(name='Ice Hockey')
+            if team.id_category == football_category:
+                return redirect('/football/players/' + str(team.id_league.id))
+            if team.id_category == basketball_category:
+                return redirect('/basketball/players/' + str(team.id_league.id))
+            if team.id_category == hockey_category:
+                return redirect('/hockey/players/' + str(team.id_league.id)) 
+    return render(request,'base/edit_team.html',context)
+
+def delete_player(request, player_id):
+    player = Player.objects.get(id = player_id)
+    some_date = date.today()
+    player_history = PlayerHistory.objects.filter(Q(start_date__lte=some_date) & Q(end_date__gte=some_date)).first()
+    player.delete()
+    football_category = Category.objects.get(name='Football')
+    basketball_category = Category.objects.get(name='Basketball')
+    hockey_category = Category.objects.get(name='Ice Hockey')
+    if player_history.id_team.id_category == football_category:
+        return redirect('/football/players/' + str(player_history.id_team.id_league.id) + '/' + str(player_history.id_team.id))
+    if player_history.id_team.id_category == basketball_category:
+        return redirect('/basketball/players/' + str(player_history.id_team.id_league.id)+ '/' + str(player_history.id_team.id))
+    if player_history.id_team.id_category == hockey_category:
+        return redirect('/hockey/players/' + str(player_history.id_team.id_league.id))
+    return redirect('/football/players')
+
+def edit_player(request, player_id):
+    player = Player.objects.get(id=player_id)
+    player_history = PlayerHistory.objects.filter(id_player=player_id)
+    player_info = {'player': player, 'history': player_history}
+    context = {
+        'title': 'Edit Player',
+        'player': player_info
+    }
+    return render(request,'base/edit_player.html',context)
