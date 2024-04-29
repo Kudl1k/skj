@@ -129,10 +129,9 @@ Players Page
                                 <h2>{{ player_info.player.name }} {{ player_info.player.surname }}</h2>
                                 {% for history in player_info.history %}
                                     <strong>Team:</strong> {{ history.id_team.name }}<br>
-                                    <strong>Since:</strong> {{ history.start_date }}<br>
-                                    {% if history.end_date %}
-                                    <strong>Until:</strong> {{ history.end_date }}<br>
-                                    {% endif %}
+                                    <div class="row">
+                                    <p>{{ history.start_date }} -> {% if history.end_date %}  {{ history.end_date }}{% endif %}</p>
+                                    </div>
                                 {% endfor %}
                             </li>
                         </ul>

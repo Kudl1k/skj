@@ -507,13 +507,38 @@ def edit_player(request, player_id):
     player_history = PlayerHistory.objects.filter(id_player=player_id)
     player_info = {'player': player, 'history': player_history}
     first_history = player_history.first()
-    print(first_history)
+    teams = None
     if first_history:
         teams = Team.objects.all().filter(id_category = first_history.id_team.id_category.id)
-    print(teams)
     context = {
         'title': 'Edit Player',
         'teams': teams,
         'player': player_info
     }
+    if request.method == 'POST':
+        if 'form1' in request.POST:
+            print(request.POST)
+            player.name = request.POST['name']
+            player.surname = request.POST['surname']
+            birthdaydate_string = request.POST['birthdaydate']
+            player.birthdate = timezone.make_aware(datetime.strptime(f"{birthdaydate_string}", "%Y-%m-%d"))
+            player.save()
+            PlayerHistory.objects.filter(id_player=player_id).delete()
+            for i in range(0, len(request.POST.getlist('league'))):
+                if request.POST.getlist('league')[i] == -1:
+                    continue
+                phistory = PlayerHistory()
+                team = request.POST.getlist('league')[i]
+                if team.isdigit():
+                    phistory.id_team = Team.objects.get(id=team)
+                    phistory.id_player = player
+                    transferdates = request.POST.getlist('transferdate')
+                    if i*2 < len(transferdates):
+                        transfer_start_date = transferdates[i*2]
+                    if i*2 + 1 < len(transferdates):
+                        transfer_end_date = transferdates[i*2 + 1]
+                    phistory.start_date = timezone.make_aware(datetime.strptime(f"{transfer_start_date}", "%Y-%m-%d"))
+                    phistory.end_date = timezone.make_aware(datetime.strptime(f"{transfer_end_date}", "%Y-%m-%d"))
+                    phistory.save()
+            
     return render(request,'base/edit_player.html',context)
