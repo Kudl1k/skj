@@ -108,6 +108,13 @@ Results page
                                     <div class="page-title">
                                         <p class"page-title">{{match_his.new_score1}} - {{match_his.new_score2}}</p>
                                     </div>
+                                    {% if forloop.last %}
+                                    <div class="page-title" style="margin-bottom: 10px;">
+                                        <a href="{% url 'delete_match_record' selected_match.id %}" class="btn btn-danger ml-auto">
+                                            <i class="bi bi-x-lg">Delete</i>
+                                        </a>
+                                    </div>
+                                    {% endif %}
                                 {% empty %}
                                     <div class="page-title">
                                         <p class="page-title">No match history information available.</p>

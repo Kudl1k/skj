@@ -19,6 +19,7 @@ urlpatterns = [
     path('edit-match/<int:match_id>', views.edit_match, name="edit_match"),
     path('delete-match/<int:match_id>', views.delete_match, name="delete_match"),
     path('delete-match/<int:match_id>', views.home, name="delete_match"),
+    path('delete-match-record/<int:match_id>',views.delete_match_record,name = 'delete_match_record'),
     path('football/results', views.home, name="football"),
     path('football/results/<int:league_id>', views.home, name="football_league"),
     path('football/results/<int:league_id>/<int:match_id>', views.home, name="football_match"),

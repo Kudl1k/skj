@@ -540,5 +540,24 @@ def edit_player(request, player_id):
                     phistory.start_date = timezone.make_aware(datetime.strptime(f"{transfer_start_date}", "%Y-%m-%d"))
                     phistory.end_date = timezone.make_aware(datetime.strptime(f"{transfer_end_date}", "%Y-%m-%d"))
                     phistory.save()
+            football_category = Category.objects.get(name='Football')
+            basketball_category = Category.objects.get(name='Basketball')
+            hockey_category = Category.objects.get(name='Ice Hockey')
+            if first_history.id_team.id_category == football_category:
+                return redirect('/football/players/' + str(first_history.id_team.id_league.id) + '/' + str(first_history.id_team.id))
+            if first_history.id_team.id_category == basketball_category:
+                return redirect('/basketball/players/' + str(first_history.id_team.id_league.id)+ '/' + str(first_history.id_team.id))
+            if first_history.id_team.id_category == hockey_category:
+                return redirect('/hockey/players/' + str(first_history.id_team.id_league.id))
             
     return render(request,'base/edit_player.html',context)
+
+def delete_match_record(request, match_id):
+    last_edit_history = EditHistory.objects.filter(id_match=match_id).order_by('-modified_at').first()
+    if last_edit_history is not None:
+        match = Match.objects.get(id = match_id)
+        match.score_1 = last_edit_history.old_score1
+        match.score_2 = last_edit_history.old_score2
+        match.save()
+        last_edit_history.delete()
+    return redirect(request.META.get('HTTP_REFERER', '/'))
