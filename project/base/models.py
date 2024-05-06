@@ -41,17 +41,15 @@ class Team(models.Model):
     def __str__(self):
         return f'{self.name} ({self.id_category.name} - {self.id_league.name})'
 
-class EditHistory(models.Model):
-    modified_at = models.DateTimeField(null=True)
-    old_score1 = models.IntegerField(default="",null=False)
-    old_score2 = models.IntegerField(default="",null=False)
-    new_score1 = models.IntegerField(default="",null=False)
-    new_score2 = models.IntegerField(default="",null=False)
+class GoalHistory(models.Model):
+    minute = models.IntegerField()
+    match = models.ForeignKey('Match', on_delete=models.CASCADE)
+    player = models.ForeignKey('Player', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    id_match = models.ForeignKey('Match', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.id_match.id_team_1.name} vs {self.id_match.id_team_2.name} - ({self.user}) {self.modified_at} - {self.old_score1}:{self.old_score2} -> {self.new_score1}:{self.new_score2}'
+        return f'{self.match.id_team_1.name} : {self.match.id_team_2.name} - {self.minute} - {self.player}'
+
 
 class Favourite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -4,11 +4,12 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta, date
-from .models import League, Category, Match, Team, Player, PlayerHistory, EditHistory, Favourite
-from .forms import UserLoginForm, UserRegistrationForm, EditMatchForm, AddMatchHistoryForm
+from .models import League, Category, Match, Team, Player, PlayerHistory, GoalHistory, Favourite
+from .forms import UserLoginForm, UserRegistrationForm
 
 # Create your views here.
 
@@ -19,13 +20,15 @@ def home(request, league_id=None, match_id=None):
     category = Category.objects.get(name='Football')
     leagues = League.objects.filter(id_category=category)
     favourites = []
+    users = []
     if request.user.is_authenticated:
         favourites = Favourite.objects.filter(user=request.user).values_list('id_match_id', flat=True)
     if league_id:
         league = League.objects.get(id=league_id)
         if match_id:
             match = Match.objects.get(id=match_id)
-            match_history = EditHistory.objects.filter(id_match=match_id)
+            match_history = GoalHistory.objects.filter(match=match_id).order_by('minute')
+            users = User.objects.filter(favourite__id_match_id=match_id)
         else:
             match = None
         matches = Match.objects.filter(id_league=league)
@@ -39,25 +42,28 @@ def home(request, league_id=None, match_id=None):
         'selected_category': category,
         'match_history': match_history,
         'favourites': favourites,
+        'users': users,
         'title': 'Football Results',
         'type_view': 'results',
     }
     return render(request, 'base/home.html', context)
 
-def hockey(request, league_id=None,match_id= None):
+def hockey(request, league_id=None, match_id=None):
     match = None
     match_history = None
     league = None
     category = Category.objects.get(name='Ice Hockey')
     leagues = League.objects.filter(id_category=category)
     favourites = []
+    users = []
     if request.user.is_authenticated:
         favourites = Favourite.objects.filter(user=request.user).values_list('id_match_id', flat=True)
     if league_id:
         league = League.objects.get(id=league_id)
         if match_id:
             match = Match.objects.get(id=match_id)
-            match_history = EditHistory.objects.filter(id_match=match_id)
+            match_history = GoalHistory.objects.filter(match=match_id).order_by('minute')
+            users = User.objects.filter(favourite__id_match_id=match_id)
         else:
             match = None
         matches = Match.objects.filter(id_league=league)
@@ -71,6 +77,7 @@ def hockey(request, league_id=None,match_id= None):
         'selected_category': category,
         'match_history': match_history,
         'favourites': favourites,
+        'users': users,
         'title': 'Ice Hockey Results',
         'type_view': 'results',
     }
@@ -79,17 +86,21 @@ def hockey(request, league_id=None,match_id= None):
 def basketball(request, league_id=None,match_id= None):
     match = None
     match_history = None
+    match = None
+    match_history = None
     league = None
     category = Category.objects.get(name='Basketball')
     leagues = League.objects.filter(id_category=category)
     favourites = []
+    users = []
     if request.user.is_authenticated:
         favourites = Favourite.objects.filter(user=request.user).values_list('id_match_id', flat=True)
     if league_id:
         league = League.objects.get(id=league_id)
         if match_id:
             match = Match.objects.get(id=match_id)
-            match_history = EditHistory.objects.filter(id_match=match_id)
+            match_history = GoalHistory.objects.filter(match=match_id).order_by('minute')
+            users = User.objects.filter(favourite__id_match_id=match_id)
         else:
             match = None
         matches = Match.objects.filter(id_league=league)
@@ -103,6 +114,7 @@ def basketball(request, league_id=None,match_id= None):
         'selected_category': category,
         'match_history': match_history,
         'favourites': favourites,
+        'users': users,
         'title': 'Basketball Results',
         'type_view': 'results',
     }
@@ -260,12 +272,15 @@ def favourite_match(request, match_id):
 @login_required
 def edit_match(request, match_id):
     match = Match.objects.get(id=match_id)
-    match_history = EditHistory.objects.filter(id_match=match_id)
-    form1 = EditMatchForm(instance=match)
-    form2 = AddMatchHistoryForm()
+    match_history = GoalHistory.objects.filter(match=match_id)
+    team1 = match.id_team_1
+    team2 = match.id_team_2
+
+    team1_players = PlayerHistory.objects.filter(Q(id_team=team1.id) & (Q(end_date__isnull=True) | Q(end_date__gte=timezone.now())))
+
+    team2_players = PlayerHistory.objects.filter(Q(id_team=team2.id) & (Q(end_date__isnull=True) | Q(end_date__gte=timezone.now())))
 
     if request.method == 'POST':
-        print(request.POST)
         if 'form1' in request.POST:
             date_string = request.POST['start_time_date']
             time_string = request.POST['start_time_time']
@@ -274,24 +289,25 @@ def edit_match(request, match_id):
             match.stadium = request.POST['stadium']
             match.save()  # Save the match instance after updating start_time
         elif 'form2' in request.POST:
-            new_history = EditHistory()
-            new_history.id_match = match
+            new_history = GoalHistory()
+            new_history.match = match
             new_history.user = request.user
-            new_history.old_score1 = match.score_1
-            new_history.old_score2 = match.score_2
-            new_history.new_score1 = request.POST['new_score1']
-            new_history.new_score2 = request.POST['new_score2']
-            match.score_1 = new_history.new_score1
-            match.score_2 = new_history.new_score2
-            new_history.modified_at = timezone.now()
+            new_history.minute = request.POST['minute']
+            player = Player.objects.get(id = request.POST['selected_player'])
+            new_history.player = player
+            team = Team.objects.get(id=request.POST['team'])
+            if team == match.id_team_1:
+                match.score_1 += 1
+            else:
+                match.score_2 += 1;
             new_history.save()
             match.save()
     context = {
         'title': 'Edit Match',
         'match': match,
         'match_history': match_history,
-        'form1': form1,
-        'form2': form2
+        'team1players': team1_players,
+        'team2players': team2_players,
     }
     return render(request,'base/edit_match.html',context)
 
@@ -331,7 +347,7 @@ def create_match(request,category_id,league_id):
             match.score_2 = 0
             match.start_time = timezone.make_aware(datetime.strptime(f"{date_string} {time_string}", "%Y-%m-%d %H:%M"))
             match.end_time = match.start_time + timedelta(hours=1.5)
-            match.viewers = request.POST['viewers']
+            match.viewers = 0
             match.stadium = request.POST['stadium']
             match.id_category = category
             match.id_league = league
@@ -553,11 +569,19 @@ def edit_player(request, player_id):
     return render(request,'base/edit_player.html',context)
 
 def delete_match_record(request, match_id):
-    last_edit_history = EditHistory.objects.filter(id_match=match_id).order_by('-modified_at').first()
+    last_edit_history = GoalHistory.objects.filter(match=match_id).order_by('-minute').first()
+    print(last_edit_history)
+    
     if last_edit_history is not None:
         match = Match.objects.get(id = match_id)
-        match.score_1 = last_edit_history.old_score1
-        match.score_2 = last_edit_history.old_score2
+        player_team = PlayerHistory.objects.filter(Q(id_player=last_edit_history.player.id) & (Q(end_date__isnull=True) | Q(end_date__gte=timezone.now()))).first()
+        print(player_team.id_team)
+        print(match.id_team_1)
+        print(match.id_team_1.id == player_team.id)
+        if (match.id_team_1.id == player_team.id):
+            match.score_1 -= 1
+        else:
+            match.score_2 -= 1
         match.save()
         last_edit_history.delete()
     return redirect(request.META.get('HTTP_REFERER', '/'))

@@ -35,6 +35,8 @@ Results page
                                     </a>
                                 </li>
                             {% endif %}
+                        {% empty %}
+                        <li class="list-group-item">There is no ligues in this category.</li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -67,14 +69,21 @@ Results page
                                 </div>
                             </div>
                             <div class="match-result text-end">
-                                <div>{{ match.score_1 }}</div>
-                                <div>{{ match.score_2 }}</div>
+                                {% if match.start_time|date:"d-m-y" < "now"|date:"d-m-y" %}
+                                    <strong>
+                                        <div>{{ match.score_1 }}</div>
+                                        <div>{{ match.score_2 }}</div>
+                                    </strong>
+                                {% else %}
+                                    <div>{{ match.score_1 }}</div>
+                                    <div>{{ match.score_2 }}</div>
+                                {% endif %}
                             </div>
                         </li>
                     {% empty %}
                         <li class="list-group-item">Please select a league to view matches.</li>
                     {% endfor %}
-                    {% if selected_league %}
+                    {% if selected_league and request.user.is_superuser %}
                         <li class="list-group-item d-flex justify-content-center align-items-center">
                             <a href="{% url 'create_match' selected_category.id selected_league.id %}" class="btn btn-primary">Add Match</a>
                         </li>
@@ -99,16 +108,11 @@ Results page
                                     <i style="position: absolute; top: 0; right: 0; font-size: 24px" id="star" class="{% if selected_match.id in favourites %}bi bi-star-fill{% else %}bi bi-star{% endif %}"></i>
                                 </a>
                                 <h6 class="page-title">Match evolution</h6>
-                                {% if match_history|length > 0 %}
-                                    <div class="page-title">
-                                        <p class"page-title">0 - 0</p>
-                                    </div>
-                                {% endif %}
                                 {% for match_his in match_history %}
                                     <div class="page-title">
-                                        <p class"page-title">{{match_his.new_score1}} - {{match_his.new_score2}}</p>
+                                        <p class"page-title">{{match_his.minute}}' - {{match_his.player.surname}} {{match_his.player.name}}</p>
                                     </div>
-                                    {% if forloop.last %}
+                                    {% if forloop.last and request.user.is_superuser %}
                                     <div class="page-title" style="margin-bottom: 10px;">
                                         <a href="{% url 'delete_match_record' selected_match.id %}" class="btn btn-danger ml-auto">
                                             <i class="bi bi-x-lg">Delete</i>
@@ -119,6 +123,12 @@ Results page
                                     <div class="page-title">
                                         <p class="page-title">No match history information available.</p>
                                     </div>
+                                {% endfor %}
+                                <h6 class="page-title">This match is also favourite for:</h6>
+                                {% for user in users %}
+                                    <p class="page-title">{{ user.last_name }} {{ user.first_name }}</p>
+                                {% empty %}
+                                <p class="page-title">Noone have this match in favourites</p>
                                 {% endfor %}
                                 {% if request.user.is_superuser %}
                                 <div class="page-title justify-content-around">
