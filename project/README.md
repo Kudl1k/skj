@@ -3,6 +3,7 @@ This is my semestral project for subject (SKJ). It is very light version of [Liv
 
 # Todo
 - [ ] favourite page
+- [ ] 
 - [x] add deletion of record in the edit match page
 - [x] edit team in players page
 - [x] edit player in players page
