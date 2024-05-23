@@ -1,0 +1,125 @@
+"""
+    Úkol 1
+
+    Ve skladu firmy Hornbach se porouchal systém pro správu skladu rostlin.
+    Pomozte skladníkům naimplementováním funkce `is_plant_reachable`, která obdrží soubor s
+    mapou skladu rostlin, a zjistí, jestli se lze ze startovního bodu s vozítkem dostat k
+    cílové rostlině, či nikoliv.
+
+    Parametr `file` bude obsahovat cestu k souboru s mapou skladu.
+    - Na prvním řádku souboru naleznete rozměry skladu ve formátu `<výška> <šířka>`.
+    - Na dalších řádcích poté bude uložena mapa skladu se zadanými rozměry.
+    - Každá pozice v mapě je reprezentována jedním znakem.
+        - Znak "S" reprezentuje startovní pozici vozítka. V mapě bude vždy právě jedna startovní pozice.
+        - Znak " " (mezera) reprezentuje volné místo, kterým lze projet.
+        - Jakýkoliv jiný znak označuje místo, kterým nelze projet, nebo cílovou rostlinu (viz níže).
+
+    Parametr `target` obsahuje cílovou rostlinu, ke které se chceme dostat.
+    - Cílová rostlina bude vždy reprezentována jedním znakem, který se nebude rovnat "S" ani " ".
+
+    Funkce musí určit, zda je možné se ze startovní pozice vozítkem dostat k cílové rostlině
+    pomocí povolených pohybů (viz níže).
+    Pokud to je možné, funkce vrátí True.
+    Pokud to není možné, funkce vrátí False.
+
+    Pravidla pohybu vozítka:
+    - Vozítko začíná na startovní pozici.
+    - Vozítko se smí pohybovat pouze přes volná místa (reprezentována mezerami).
+    - Vozítko se smí pohybovat pouze nahoru, dolů, doprava a doleva (nemůže se hýbat diagonálně).
+    - Ujistěte se, že vozítko nevyjede ven z mapy!
+
+    Příklad vstupního souboru:
+    ```
+    6 5
+    xxx x
+    zS  x
+       Ox
+     xxxx
+    xL  x
+    xxxxx
+    ```
+    Mapa tohoto skladu má 6 řádků a 5 sloupců.
+    Startovní pozice je (1, 1).
+
+    Pokud by funkce dostala s touto mapou cílovou rostlinu "O", měla by vrátit True (k rostlině se lze dostat).
+    Pokud by funkce dostala s touto mapou cílovou rostlinu "L", měla by vrátit False (k rostlině se nelze dostat).
+    Pokud by funkce dostala s touto mapou cílovou rostlinu např. "U", měla by vrátit False (taková rostlina ve skladu vůbec není).
+
+    Ukázkové výstupy pro vstupní soubory `plants-<X>.txt` naleznete v souboru `tests.py`.
+"""
+
+
+class FlowerPotBelt:
+    def __init__(num:int,weigh:int):
+        pass
+    """
+    Úkol 2
+
+    Aby toho nebylo málo, kromě nefunkčního systému dnes ani do práce nepřišel stážista, který se
+    stará o pás s květináči. Vytvořte třídu `FlowerPotBelt`, která za něj zaskočí.
+
+    Vlastnosti třídy:
+    Třída bude reprezentovat pás s N pozicemi pro květináče.
+        - Pás má maximální zátěž, kterou může unést.
+        - Obě dvě hodnoty (počet pozic a maximální zátěž) budou zadány v konstruktoru třídy.
+    Pás si uchovává současnou pozici, nad kterou budou probíhat operace s květináči.
+        - Pás umožní přepínat současnou pozici pomocí pohybů doleva a doprava.
+        - Pás je zapojen do kruhu. Pokud např. dojde k pohybu doprava na pravém kraji pásu, tak se
+          současná pozice posune na levý kraj pásu.
+        Příklad pásu s 3 pozicemi (hranaté závorky označují současnou pozici):
+            začáteční stav -> [K1] _ K2
+            pohyb doprava  -> K1 [_] K2
+            pohyb doprava  -> K1 _ [K2]
+            pohyb doprava  -> [K1] _ K2
+            pohyb doleva   -> K1 _ [K2]
+    Na každé pozici pásu se může nacházet květináč, nebo může být pozice prázdná.
+        - Pás umožní vložit na současnou pozici květináč, pokud je pozice prázdná.
+        - Na začátku budou všechny pozice na pásu prázdné.
+    Každý květináč bude obsahovat informaci o tom, jakou maximální hmotnost hlíny do něj lze vložit.
+        - Pás umožní vložit do květináče na současné pozici zadané množství hlíny určitého typu.
+            - Hlínu půjde vložit pouze tehdy, pokud v daném květináči bude dostatek místa, a zároveň
+              pokud celková váha veškeré hlíny ve všech květináčích na pásu nepřesáhne jeho maximální zátěž.
+        - Pás umožní získat informace o hlíně, která se nachází v květináči na současné pozici.
+        - Pás umožní odebrat květináč na současné pozici, pokud je alespoň z poloviny zaplněn.
+
+    Třída bude poskytovat následující rozhraní:
+    ```python
+    # Vytvoření pásu s 3 pozicemi a maximální zátěží 15 kg.
+    belt = FlowerPotBelt(3, 15)
+
+    # Umístění květináče s maximální hmotností 5 kg hlíny na současnou pozici.
+    # - Pokud na současné pozici už je květináč, metoda vyhodí libovolnou výjimku.
+    belt.place_flowerpot(5)
+
+    # Přidání hlíny typu "soft" s váhou 2 kg do květináče na současné pozici.
+    # - Pokud na současné pozici není květináč, metoda vyhodí libovolnou výjimku.
+    # - Pokud se do květináče na současné pozici již nevlezou 2 kg hlíny, metoda vyhodí libovolnou výjimku.
+    # - Pokud by po přidání hlíny celková hmotnost hlíny ve všech květináčích na pásu přesáhla celkovou
+    #   maximální zátěž pásu, metoda vyhodí libovolnou výjimku.
+    belt.add_soil("soft", 2)
+
+    belt.add_soil("hard", 1)
+    belt.add_soil("soft", 1)
+
+    # Získá informace o obsahu hlínu v květináči na současné pozici.
+    # - Pokud na současné pozici není květináč, vrátí metoda None.
+    # - Pokud na současné pozici je květináč, vrátí n-tici se všemi typy hlín v květináči, spolu s
+    #   celkovou váhou každého typu hlíny. Navrácená n-tice bude seřazená vzestupně dle názvu typu hlíny.
+    soil = belt.get_pot()
+    assert soil == (("hard", 1), ("soft", 3))
+
+    # Odstraní květináč ze současné pozice.
+    # - Pokud na současné pozici není květináč, metoda vyhodí libovolnou výjimku.
+    # - Pokud květináč na současné pozici není zaplněn hlínou alespoň z poloviny své maximální hmotnosti,
+    #   metoda vyhodí libovolnou výjimku.
+    belt.take_pot()
+
+    # Nastaví současnou pozici na pásu o jednu pozici doprava.
+    belt.move_right()
+
+    # Nastaví současnou pozici na pásu o jednu pozici doleva.
+    belt.move_left()
+    ```
+
+    Další ukázky a okrajové situace naleznete v souboru `tests.py`.
+    """
